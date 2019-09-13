@@ -1,5 +1,6 @@
 const express = require('express');
 const campsiteServices = require('./campsites-service');
+// const {checkReviewsExist} = '../services/service';
 const jsonBodyParser = express.json()
 const campsiteRouter = express.Router();
 
@@ -8,9 +9,11 @@ campsiteRouter
         .route('/')
         .get((req, res, next)=>{
             campsiteServices
-                .getAllSites(req.app.get('db'))
-                    .then(results =>{
-                        res.json(results)
+                .getAllSites(req.app.get('db'), req.query.order)
+                    .then(result =>{
+
+                        res.json(result.map(campsiteServices.serializeCampsites))
+                        
                     }).catch(next);
         });
 
@@ -26,10 +29,26 @@ campsiteRouter
                 req.app.get('db'),
                 id
             ).then(result=>{
+
                 res.json(result);
             }).catch(next)
 
         })
+// 
+// get the reviews for campsite
+campsiteRouter.route('/:campsite_id/reviews/')
+            .all(checkReviewsExist)
+            .get((req, res, next)=>{
+                campsiteServices.getCampsiteReviews(
+                    req.app.get('db'),
+                    req.params.campsite_id
+                ).then(result=>{
+                    console.log(result[0].date_created);
+                    res.json(result.map(campsiteServices.serializeReviews));
+                }).catch(next);
+            });
+
+
 
 // update campsite
 campsiteRouter
@@ -62,7 +81,7 @@ campsiteRouter
                 res.status(204)
                     .location(`/${result.id}`)
                     .json({result});
-            })
+            }).catch(next);
 
 
         })//end update
@@ -134,5 +153,27 @@ async function checkCampsiteExists(req, res, next) {
         next(error)
     }
 }
+
+// check if reviews for campsite
+async function checkReviewsExist(req, res, next) {
+    try {
+        const rev = await campsiteServices.getCampsiteReviews(
+            req.app.get('db'),
+            req.params.campsite_id
+        )
+
+        if (!rev)
+            return res.status(404).json({
+                error: `campsite doesn't exist`
+            })
+
+        res.rev = rev
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
+
+
         
 module.exports = campsiteRouter;

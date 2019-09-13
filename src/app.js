@@ -11,7 +11,8 @@ const { NODE_ENV } = require('./config')
 const app = express()
 // endpoints
 const campsiteRouter = require('./campsites/campsites-router');
-// const authRouter = require('./auth/auth-router');
+const revRouter = require('./reviews/reviews-router');
+const authRouter = require('./auth/auth-router');
 
 // logger
 app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
@@ -24,7 +25,8 @@ app.use(cors());
 app.use(helmet())
 // endpoints
 app.use('/api/campsites', campsiteRouter);
-// app.use('/api/auth', authRouter);
+app.use('/api/reviews', revRouter);
+app.use('/api/auth', authRouter);
 
 // catch all error handler
 app.use(function errorHandler(error, req, res, next) {

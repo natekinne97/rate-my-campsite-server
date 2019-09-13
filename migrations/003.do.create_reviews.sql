@@ -4,5 +4,5 @@ CREATE TABLE reviews(
     rating INTEGER NOT NULL,
     date_created TIMESTAMP DEFAULT now() NOT NULL,
     campsite_id INTEGER
-       REFERENCES campsites(id) ON DELETE CASCADE NOT NULL,
+       REFERENCES campsites(id) ON DELETE CASCADE NOT NULL
 );

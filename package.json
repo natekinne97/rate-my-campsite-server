@@ -9,6 +9,7 @@
     "migrate": "postgrator --config postgrator-config.js",
     "seed": "psql -U dunder-mifflin -d ratemycampsite -a -f seeds/seed.seed_campsites.sql",
     "start": "node src/server.js",
+    "kill": " sudo kill -9 `sudo lsof -t -i:8000`",
     "predeploy": "npm audit",
     "deploy": "git push heroku master"
   },
