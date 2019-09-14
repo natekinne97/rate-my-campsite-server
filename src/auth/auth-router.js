@@ -10,6 +10,7 @@ authRouter
         const { user_name, password } = req.body
         //  user 
         const loginUser = { user_name, password }
+        
         // check if missing request
         for (const [key, value] of Object.entries(loginUser))
             if (value == null)

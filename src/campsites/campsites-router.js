@@ -39,11 +39,11 @@ campsiteRouter
 campsiteRouter.route('/:campsite_id/reviews/')
             .all(checkReviewsExist)
             .get((req, res, next)=>{
+                const campsite_id = Number(req.params.campsite_id);
                 campsiteServices.getCampsiteReviews(
                     req.app.get('db'),
-                    req.params.campsite_id
+                    campsite_id
                 ).then(result=>{
-                    console.log(result[0].date_created);
                     res.json(result.map(campsiteServices.serializeReviews));
                 }).catch(next);
             });
@@ -99,10 +99,10 @@ campsiteRouter.route('/')
                     city: city,
                     state: state
                 };
-
+                console.log(newCampsite);
                 // check if fields are there
                 Object.keys(newCampsite).forEach(field => {
-                    console.log(field);
+                   
                     if (!newCampsite[field]) {
                         return res.status(400).json({
                             error: `Missing '${field}' in request body`

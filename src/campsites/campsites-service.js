@@ -63,6 +63,7 @@ const campsiteServices= {
     },
     // get reviews for campsite
     getCampsiteReviews(db, campsite_id){
+        
         return db.from('reviews AS rev')
                 .select(
                     'rev.id',

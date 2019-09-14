@@ -5,7 +5,21 @@ TRUNCATE
   campsites
   RESTART IDENTITY CASCADE;
 
-
+-- insert new user values
+INSERT INTO users(user_name, full_name, nickname, password)
+VALUES
+  -- muffun-stuff
+  ('dunder', 'Dunder Mifflin', null, '$2a$12$3MsnYDHU0g.FBXkHU5qNiOVM/KT.2LXho7D6TZwbOKLFJBmSbHFbG'),
+  -- boward-word
+  ('b.deboop', 'Bodeep Deboop', 'Bo', '$2a$12$nt8./ljTB2nPzcncvT51OOTl2AvWkDwQx0Fc70d8dB.VwKx.lKJRe'),
+  -- charzard
+  ('c.bloggs', 'Charlie Bloggs', 'Charlie', '$2a$12$I7iresCXsABro/2L1XnAaOKPIqxMHvyWG/YugMlqf4HYxODNMRzM6'),
+  -- samword
+  ('s.smith', 'Sam Smith', 'Sam', '$2a$12$qkJ4CkTXE5TzeplM5IUs4eVhkvUNm4/IE1H9jdPUPD2jPNSgpkRHq'),
+  -- lex-password
+  ('lexlor', 'Alex Taylor', 'Lex', '$2a$12$9YDhqae2Hqt.w9io46C1fO/is48ebGbA0vRSX8xtHcVtX30TAPjd2'),
+  -- ping-password
+  ('wippy', 'Ping Won In', 'Ping', '$2a$12$/jAv6ITFFzjO4kaGUK6M5O2cy2OUv3hj8i0HnsPR4CPMCIdRrr5G6');
 
 
 -- populate campsites
