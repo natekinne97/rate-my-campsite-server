@@ -1,6 +1,7 @@
 const express = require('express')
 const AuthService = require('./auth-service')
-
+const nodemailer = require('nodemailer')
+const config = require('../config')
 const jsonBodyParser = express.json()
 const authRouter = express.Router()
 
@@ -45,5 +46,7 @@ authRouter
             })
             .catch(next)
     })
+
+
 
 module.exports = authRouter
