@@ -6,11 +6,11 @@ const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 
 usersRouter
-    .post('/', jsonBodyParser, (req, res, next) => {
-        const { password, user_name, full_name, nickname } = req.body
+    .post('/new-user', jsonBodyParser, (req, res, next) => {
+        const { password, user_name, email, full_name } = req.body
 
         // make sure all fields are filled
-        for (const field of ['full_name', 'user_name', 'password'])
+        for (const field of ['full_name', 'email','user_name', 'password'])
             if (!req.body[field])
                 return res.status(400).json({
                     error: `Missing '${field}' in request body`
@@ -38,7 +38,7 @@ usersRouter
                             user_name,
                             password: hashedPassword,
                             full_name,
-                            nickname,
+                            email,
                             date_created: 'now()',
                         }
                         // insert to db

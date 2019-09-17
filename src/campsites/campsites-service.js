@@ -38,8 +38,37 @@ const campsiteServices= {
     },
     getById(db, id){
         return db.from('campsites as camp')
-                .select('*')
-                .where('camp.id', id)
+            .select(
+                'camp.id',
+                'camp.img',
+                'camp.name',
+                'camp.description',
+                'camp.park',
+                'camp.city',
+                'camp.state',
+                db.raw(
+                    `count(DISTINCT rev) AS number_of_reviews`,
+                ),
+                db.raw(
+                    'coalesce(avg(rev.rating), 0) AS avg_reviews'
+                ),
+                db.raw(
+                    `json_strip_nulls(
+                            json_build_object(
+                                'id', 'rev.id',
+                                'text', 'rev.text',
+                                'rating', 'rev.rating',
+                                'campsite_id', 'rev.campsite_id'
+                          )
+                     ) AS "reviews"`
+                ),
+            )
+            .leftJoin(
+                'reviews AS rev',
+                'camp.id',
+                'rev.campsite_id',
+            ).groupBy(db.raw('1,2, 3, 4, 5, 6, 7'))
+            .where('campsite_id', id);
     },
     // insert campsite to db
     insertCampsite(db, newCampsite){

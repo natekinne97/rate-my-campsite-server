@@ -13,6 +13,8 @@ const app = express()
 const campsiteRouter = require('./campsites/campsites-router');
 const revRouter = require('./reviews/reviews-router');
 const authRouter = require('./auth/auth-router');
+const resRouter = require('./reset-password/reset-router');
+const usersRouter = require('./users/users-router');
 
 // logger
 app.use(morgan((NODE_ENV === 'production') ? 'tiny' : 'common', {
@@ -27,7 +29,9 @@ app.use(helmet())
 app.use('/api/campsites', campsiteRouter);
 app.use('/api/reviews', revRouter);
 app.use('/api/auth', authRouter);
-
+app.use('/api/reset', resRouter);
+app.use('/api/users', usersRouter);
+// /api/users/new-user
 // catch all error handler
 app.use(function errorHandler(error, req, res, next) {
     let response
