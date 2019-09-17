@@ -14,7 +14,9 @@ resRouter
     .post(jsonBodyParser, (req, res, next) => {
         const {  email } = req.body;
       
+        console.log(req.body, 'body');
 
+        console.log(email, 'print email email')
         if (!email)
             return res.status(400).json({
                 error: 'Incorrect user_name or email',
@@ -128,12 +130,24 @@ resRouter.route('/reset-check')
 // update the password
 resRouter.route('/reset-password')
     .patch(jsonBodyParser,(req, res, next)=>{
-        const {user_name, password} = req.body;
+        const {username, password} = req.body;
+        console.log(username, 'username');
+
+        if(!username){
+            res.status(400).json({
+                error: 'must include username'
+            })
+        }else if(!password){
+            res.status(400).json({
+                error: 'Must include password'
+            })
+        }
         // get the user
         resestServices.getUserWithUserName(
             req.app.get('db'),
-            user_name
+            username
         ).then(user=>{
+            console.log('user found');
             // check the new password
             const passwordError = UserService.validatePassword(password);
             if (passwordError)
@@ -141,6 +155,7 @@ resRouter.route('/reset-password')
             // hash password
             return UserService.hashPassword(password)
                         .then(hashedPassword=>{
+                            console.log('hashing password');
                             // makesure hash password is put into db
                             const updated = {
                                 password: hashedPassword
@@ -151,6 +166,7 @@ resRouter.route('/reset-password')
                                 user.id,
                                 updated
                             ).then(user => {
+                                console.log('updating password');
                                 // send successful
                                 res
                                     .status(201)
