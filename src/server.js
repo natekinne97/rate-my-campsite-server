@@ -8,6 +8,8 @@ const db = knex({
     connection: DB_URL,
 })
 
+// db.on('query', console.log);
+
 app.set('db', db)
 
 app.get('/api/*', (req, res) => {

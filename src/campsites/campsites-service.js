@@ -18,16 +18,7 @@ const campsiteServices= {
                     db.raw(
                         'coalesce(avg(rev.rating), 0) AS avg_reviews'
                     ),
-                    db.raw(
-                        `json_strip_nulls(
-                            json_build_object(
-                                'id', 'rev.id',
-                                'text', 'rev.text',
-                                'rating', 'rev.rating',
-                                'campsite_id', 'rev.campsite_id'
-                          )
-                     ) AS "reviews"`
-                    ),
+    
                 )
             .leftJoin(
                 'reviews AS rev',
@@ -52,23 +43,13 @@ const campsiteServices= {
                 db.raw(
                     'coalesce(avg(rev.rating), 0) AS avg_reviews'
                 ),
-                db.raw(
-                    `json_strip_nulls(
-                            json_build_object(
-                                'id', 'rev.id',
-                                'text', 'rev.text',
-                                'rating', 'rev.rating',
-                                'campsite_id', 'rev.campsite_id'
-                          )
-                     ) AS "reviews"`
-                ),
             )
-            .leftJoin(
+            .leftOuterJoin(
                 'reviews AS rev',
                 'camp.id',
                 'rev.campsite_id',
             ).groupBy(db.raw('1,2, 3, 4, 5, 6, 7'))
-            .where('campsite_id', id);
+            .where('camp.id', id);
     },
     // insert campsite to db
     insertCampsite(db, newCampsite){
@@ -92,25 +73,20 @@ const campsiteServices= {
     },
     // get reviews for campsite
     getCampsiteReviews(db, campsite_id){
+        return db.raw(`select reviews.id, reviews.text, reviews.rating, 
+        to_char(reviews.date_created, 'DD-MM-YY'), 
+        users.user_name from reviews, users 
+        where (reviews.user_id = users.id and reviews.campsite_id = ${campsite_id});`)
         
-        return db.from('reviews AS rev')
-                .select(
-                    'rev.id',
-                    'rev.text',
-                    'rev.rating',
-                    'rev.campsite_id',
-                    'rev.date_created'
-                    )
-                .where('rev.campsite_id', campsite_id);
     },
-    serializeReviews(site){
-        console.log(site)
-        return{
+    serializeReviews(site) {
+        console.log(site, 'site');
+        return {
             id: site.id,
             text: xss(site.text),
             rating: site.rating,
-            campsite_id: site.campsite_id,
-            date_created: site.date_created
+            date_created: site.to_char,
+            author: xss(site.user_name)
         }
     },
     serializeCampsites(site){

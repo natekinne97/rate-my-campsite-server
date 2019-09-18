@@ -29,7 +29,7 @@ campsiteRouter
                 req.app.get('db'),
                 id
             ).then(result=>{
-
+                console.log(result);
                 res.json(result);
             }).catch(next)
 
@@ -44,7 +44,7 @@ campsiteRouter.route('/:campsite_id/reviews/')
                     req.app.get('db'),
                     campsite_id
                 ).then(result=>{
-                    res.json(result.map(campsiteServices.serializeReviews));
+                    res.json(result.rows.map(campsiteServices.serializeReviews));
                 }).catch(next);
             });
 

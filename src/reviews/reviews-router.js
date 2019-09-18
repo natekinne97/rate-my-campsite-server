@@ -12,7 +12,8 @@ revRouter.route('/:id')
                 req.app.get('db'),
                 req.params.id
             ).then(result => {
-                res.json(result);
+                
+                res.json(result.rows.map(reviewService.serializeReviews));
             }).catch(next);
         })
 
