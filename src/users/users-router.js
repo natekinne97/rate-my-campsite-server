@@ -24,7 +24,10 @@ usersRouter
             return res.status(400).json({ error: passwordError })
 
         // first check if email is used to ensure no errors
-        UsersService.getUsernameWithEmail(email)
+        UsersService.getUsernameWithEmail(
+            req.app.get('db'),
+            email
+            )
         .then(user=>{
             if(user){
                 res.status(400).json({
