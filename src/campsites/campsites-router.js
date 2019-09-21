@@ -1,6 +1,6 @@
 const express = require('express');
 const campsiteServices = require('./campsites-service');
-// const {checkReviewsExist} = '../services/service';
+const { requireAuth } = require('../middleware/jwt-auth');
 const jsonBodyParser = express.json()
 const campsiteRouter = express.Router();
 
@@ -59,7 +59,7 @@ campsiteRouter.route('/:campsite_id/reviews/')
 campsiteRouter
         .route('/:id')
         .all(checkCampsiteExists)
-        .patch(jsonBodyParser, (req, res, next)=>{
+        .patch(requireAuth,jsonBodyParser, (req, res, next)=>{
             const {img, name, description, park, city, state} = req.body;
             const updated = {img: img, 
                 name: name, 
@@ -93,7 +93,7 @@ campsiteRouter
 
 // insert new site
 campsiteRouter.route('/')
-    .post(jsonBodyParser,(req, res, next)=>{
+    .post(requireAuth,jsonBodyParser,(req, res, next)=>{
                 //get data
                 const { img, name, description, park, city, state } = req.body;
                 const newCampsite = {
@@ -130,7 +130,7 @@ campsiteRouter.route('/')
 // delete the campsite
 campsiteRouter.route('/:id')
             .all(checkCampsiteExists)
-            .delete((req, res, next)=>{
+            .delete(requireAuth,(req, res, next)=>{
                 campsiteServices.deleteCampsite(
                     req.app.get('db'),
                     req.params.id
