@@ -37,6 +37,7 @@ app.use(function errorHandler(error, req, res, next) {
     let response
     if (NODE_ENV === 'production') {
         response = { error: 'Server error' }
+        console.log(error, 'something went wrong');
     } else {
         console.error(error)
         response = { error: error.message, object: error }
