@@ -23,6 +23,18 @@ usersRouter
         if (passwordError)
             return res.status(400).json({ error: passwordError })
 
+        // first check if email is used to ensure no errors
+        UsersService.getUsernameWithEmail(email)
+        .then(user=>{
+            if(user){
+                res.status(400).json({
+                    error: "Account already exists"
+                })
+            }
+
+        }).catch(error=>console.log(error));
+
+
         // make sure username doesnt already exist
         UsersService.hasUserWithUserName(
             req.app.get('db'),

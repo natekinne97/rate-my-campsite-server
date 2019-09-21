@@ -40,6 +40,12 @@ const UsersService = {
         }
         return null
     },
+    // check user from db
+    getUsernameWithEmail(db, email) {
+        return db('users')
+            .where({ email })
+            .first()
+    },
     // encript password
     hashPassword(password) {
         return bcrypt.hash(password, 12)
