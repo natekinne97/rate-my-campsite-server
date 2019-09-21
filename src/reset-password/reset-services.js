@@ -24,7 +24,7 @@ const resetServices = {
         return db.from('users')
             .where('id', id)
             .update(updateUser)
-            .returning('resetpasswordtoken', 'resetpasswordexpires')
+            .returning('*')
             .then(rows => {
                 return rows[0];
             });

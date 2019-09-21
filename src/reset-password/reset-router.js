@@ -40,13 +40,14 @@ resRouter
                     resetpasswordtoken: token,
                     resetpasswordexpires: Date.now() + 36000
                 }
-               
+            
                 // not sure whats happening here or if it will work
                 resestServices.updateUserInfo(
                     req.app.get('db'),
                     dbUser.id,
                     update
                     ).then(result =>{
+                        
                         if(!result.resetpasswordtoken){
                             res.status(400).json({
                                 error: "Error. Could not create token"
