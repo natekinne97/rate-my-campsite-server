@@ -39,8 +39,6 @@ app.use(function errorHandler(error, req, res, next) {
         response = { error: 'Server error', 
         message: "error something went wrong", 
         errorMessage: error }
-        // remove this when running
-        console.log(error, 'something went wrong');
     } else {
         console.error(error)
         response = { error: error.message, object: error }
