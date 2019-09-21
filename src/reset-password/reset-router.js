@@ -13,10 +13,7 @@ resRouter
     .route('/forgot')
     .post(jsonBodyParser, (req, res, next) => {
         const {  email } = req.body;
-      
-        console.log(req.body, 'body');
-
-        console.log(email, 'print email email')
+    
         if (!email)
             return res.status(400).json({
                 error: 'Incorrect user_name or email',
@@ -28,7 +25,7 @@ resRouter
             email
         )
             .then(dbUser => {
-                console.log(dbUser.email)
+                
                 if (!dbUser.email)
                     return res.status(400).json({
                         error: 'email not found',
@@ -38,12 +35,12 @@ resRouter
                 const sub = dbUser.user_name
                 const payload = { user_id: dbUser.id }
                 const token = AuthService.createJwt(sub, payload);
-                // console.log(token, 'token');
+                
                 const update = {
                     resetpasswordtoken: token,
                     resetpasswordexpires: Date.now() + 36000
                 }
-                console.log(dbUser.id, 'user id');
+               
                 // not sure whats happening here or if it will work
                 resestServices.updateUserInfo(
                     req.app.get('db'),
@@ -51,7 +48,9 @@ resRouter
                     update
                     ).then(result =>{
                         if(!result.resetpasswordtoken){
-                            console.log('token not created');
+                            res.status(400).json({
+                                error: "Error. Could not create token"
+                            })
                         }
                     })
 
@@ -79,14 +78,13 @@ resRouter
 
                 // send the email
                 transporter.sendMail(mailOptions, function (err, response) {
-                    console.log('sending email')
+                    
                     if (err) {
                         res.status(400).json({
                             error: 'Unable to send',
                             message: 'Please try again later'
                         })
                     } else {
-                        console.log('success')
                         res.status(200).json('recovery email sent');
                     }
                 })
@@ -101,8 +99,6 @@ resRouter.route('/reset-check')
     .post(jsonBodyParser,(req, res, next)=>{
         // get user token
         const {resetPasswordToken} = req.body;
-        console.log(resetPasswordToken, 'reset token');
-        console.log(req.body, 'req.params');
         // find user with token
         resestServices.getUserWithTokens(
             req.app.get('db'),
@@ -115,7 +111,6 @@ resRouter.route('/reset-check')
             }else{
                
                 if(Number(user.resetpasswordexpires) > Date.now()){
-                    console.log('working')
                     res.status(200)
                         .location(`/${user.id}`)
                         .json(user.user_name);
@@ -131,8 +126,7 @@ resRouter.route('/reset-check')
 resRouter.route('/reset-password')
     .patch(jsonBodyParser,(req, res, next)=>{
         const {username, password} = req.body;
-        console.log(username, 'username');
-
+       
         if(!username){
             res.status(400).json({
                 error: 'must include username'
@@ -147,7 +141,6 @@ resRouter.route('/reset-password')
             req.app.get('db'),
             username
         ).then(user=>{
-            console.log('user found');
             // check the new password
             const passwordError = UserService.validatePassword(password);
             if (passwordError)
@@ -155,7 +148,7 @@ resRouter.route('/reset-password')
             // hash password
             return UserService.hashPassword(password)
                         .then(hashedPassword=>{
-                            console.log('hashing password');
+                           
                             // makesure hash password is put into db
                             const updated = {
                                 password: hashedPassword
@@ -166,7 +159,6 @@ resRouter.route('/reset-password')
                                 user.id,
                                 updated
                             ).then(user => {
-                                console.log('updating password');
                                 // send successful
                                 res
                                     .status(201)

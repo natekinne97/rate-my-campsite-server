@@ -1,19 +1,13 @@
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
-const config = require('../config')
 
 const resetServices = {
     // check user from db
     getUsernameWithEmail(db, email) {
-        console.log(email, 'getusewithemail')
-        // insert your db here
         return db('users')
             .where({email})
             .first()
     },
     // check user from db
     getUserWithUserName(db, user_name) {
-        // insert your db here
         return db('users')
             .where({ user_name })
             .first()

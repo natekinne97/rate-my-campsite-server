@@ -109,7 +109,7 @@ const campsiteServices= {
                 state: xss(site.state),
             }
         }else{
-            console.log('returning with reviews');
+            
             return {
                 id: site.id,
                 img: xss(site.img),

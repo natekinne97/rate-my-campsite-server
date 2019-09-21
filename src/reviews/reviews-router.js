@@ -55,14 +55,13 @@ revRouter.route('/:id')
 // insert new review
 revRouter.route('/')
     .post(requireAuth, jsonBodyParser,(req,res, next)=>{
-            const { text, rating, campsite_id, user_id} = req.body;
-            console.log(user_id);
-            console.log(req.user, 'req.user');
+            const { text, rating, campsite_id} = req.body;
+            
             const newReview = {
                 text: xss(text),
                 rating: rating,
                 campsite_id: Number(campsite_id),
-                user_id: req.user.id
+                user_id: Number(req.user.id)
             }
             
             // check if fields are there
@@ -80,7 +79,7 @@ revRouter.route('/')
                 req.app.get('db'),
                 newReview
             ).then(result => {
-                res.status(204)
+                res.status(200)
                     .location(`/${result.id}`)
                     .json(result)
             }).catch(next);
