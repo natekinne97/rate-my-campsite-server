@@ -8,5 +8,3 @@ CREATE TABLE campsites(
     state TEXT NOT NULL
     
 );
-
--- must be altered when all of the routes have been made

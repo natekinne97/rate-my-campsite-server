@@ -73,14 +73,15 @@ const campsiteServices= {
     },
     // get reviews for campsite
     getCampsiteReviews(db, campsite_id){
+        console.log('type of campsite id', typeof campsite_id);
+        
         return db.raw(`select reviews.id, reviews.text, reviews.rating, 
         to_char(reviews.date_created, 'DD-MM-YY'), 
         users.user_name from reviews, users 
-        where (reviews.user_id = users.id and reviews.campsite_id = ${campsite_id});`)
+        where (reviews.user_id = users.id and reviews.campsite_id = ${campsite_id})`);
         
     },
     serializeReviews(site) {
-        console.log(site, 'site');
         return {
             id: site.id,
             text: xss(site.text),
@@ -90,18 +91,39 @@ const campsiteServices= {
         }
     },
     serializeCampsites(site){
-        return {
-            id: site.id,
-            img: xss(site.img),
-            name: xss(site.name),
-            description: xss(site.description),
-            park: xss(site.name),
-            city: xss(site.city),
-            state: xss(site.state),
-            number_of_reviews: site.number_of_reviews,
-            avg_reviews: site.avg_reviews
+        
+        if(typeof site === 'string'){
+            site = JSON.parse(site);
+            console.log('type of site change: ', typeof site);
+            console.log(site, 'id for site attempting');
+        };
+        if(Number(site.number_of_reviews) === 0){
+            console.log('checking type of site: ', typeof site);
+            return {
+                id: site.id,
+                img: xss(site.img),
+                name: xss(site.name),
+                description: xss(site.description),
+                park: xss(site.park),
+                city: xss(site.city),
+                state: xss(site.state),
+            }
+        }else{
+            console.log('returning with reviews');
+            return {
+                id: site.id,
+                img: xss(site.img),
+                name: xss(site.name),
+                description: xss(site.description),
+                park: xss(site.park),
+                city: xss(site.city),
+                state: xss(site.state),
+                number_of_reviews: site.number_of_reviews,
+                avg_reviews: site.avg_reviews
+            }
         }
-    }
+    },
+
 }
 
 module.exports = campsiteServices;

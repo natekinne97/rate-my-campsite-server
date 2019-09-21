@@ -1,7 +1,5 @@
 const express = require('express')
 const AuthService = require('./auth-service')
-const nodemailer = require('nodemailer')
-const config = require('../config')
 const jsonBodyParser = express.json()
 const authRouter = express.Router()
 
@@ -41,6 +39,7 @@ authRouter
                         // token is based on unique user id
                         res.send({
                             authToken: AuthService.createJwt(sub, payload),
+                            user_id: dbUser.id,
                         })
                     })
             })

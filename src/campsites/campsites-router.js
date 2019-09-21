@@ -8,11 +8,14 @@ const campsiteRouter = express.Router();
 campsiteRouter
         .route('/')
         .get((req, res, next)=>{
+            console.log('getting called during test');
+            
             campsiteServices
                 .getAllSites(req.app.get('db'), req.query.order)
                     .then(result =>{
+                    
+                        res.status(200).json(result.map( campsiteServices.serializeCampsites))
 
-                        res.json(result.map(campsiteServices.serializeCampsites))
                         
                     }).catch(next);
         });
@@ -29,8 +32,9 @@ campsiteRouter
                 req.app.get('db'),
                 id
             ).then(result=>{
-                console.log(result);
-                res.json(result);
+                    console.log(typeof result, 'is result type')
+                    console.log(result, 'results');
+                  res.status(200).json(campsiteServices.serializeCampsites(result[0]));
             }).catch(next)
 
         })
@@ -39,11 +43,12 @@ campsiteRouter
 campsiteRouter.route('/:campsite_id/reviews/')
             .all(checkReviewsExist)
             .get((req, res, next)=>{
-                const campsite_id = Number(req.params.campsite_id);
+                
                 campsiteServices.getCampsiteReviews(
                     req.app.get('db'),
-                    campsite_id
+                    Number(req.params.campsite_id)
                 ).then(result=>{
+                    console.log(result.rows, 'rows result. sending');
                     res.json(result.rows.map(campsiteServices.serializeReviews));
                 }).catch(next);
             });
@@ -156,10 +161,11 @@ async function checkCampsiteExists(req, res, next) {
 
 // check if reviews for campsite
 async function checkReviewsExist(req, res, next) {
+    console.log('checking if reviews exist');
     try {
         const rev = await campsiteServices.getCampsiteReviews(
             req.app.get('db'),
-            req.params.campsite_id
+            Number(req.params.campsite_id)
         )
 
         if (!rev)

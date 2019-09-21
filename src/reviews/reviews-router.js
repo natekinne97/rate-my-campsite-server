@@ -1,8 +1,9 @@
 const express = require('express');
 const reviewService = require('./reviews-service');
-// const { checkReviewsExist } = '../services/service';
+const {requireAuth} = require('../middleware/jwt-auth');
 const jsonBodyParser = express.json()
 const revRouter = express.Router();
+const xss = require('xss');
 
 // get reviews by id
 revRouter.route('/:id')
@@ -53,12 +54,15 @@ revRouter.route('/:id')
 
 // insert new review
 revRouter.route('/')
-        .post(jsonBodyParser,(req,res, next)=>{
-            const { text, rating, campsite_id } = req.body;
+    .post(requireAuth, jsonBodyParser,(req,res, next)=>{
+            const { text, rating, campsite_id, user_id} = req.body;
+            console.log(user_id);
+            console.log(req.user, 'req.user');
             const newReview = {
-                text: text,
+                text: xss(text),
                 rating: rating,
-                campsite_id: campsite_id
+                campsite_id: Number(campsite_id),
+                user_id: req.user.id
             }
             
             // check if fields are there

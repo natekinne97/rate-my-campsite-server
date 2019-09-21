@@ -13,6 +13,7 @@ module.exports = {
     "host": process.env.MIGRATION_DB_HOST,
     "port": process.env.MIGRATION_DB_PORT,
     "database": process.env.MIGRATION_DB_NAME,
+    // "database": process.env.TEST_DB_URL,
     "username": process.env.MIGRATION_DB_USER,
     "password": process.env.MIGRATION_DB_PASS
 }
