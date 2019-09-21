@@ -41,10 +41,6 @@ app.use(function errorHandler(error, req, res, next) {
         errorMessage: error }
         // remove this when running
         console.log(error, 'something went wrong');
-        res.json({
-            error: error,
-            message: "something went wrong"
-                    })
     } else {
         console.error(error)
         response = { error: error.message, object: error }
