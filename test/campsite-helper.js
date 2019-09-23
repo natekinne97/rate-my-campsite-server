@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 
 // make array for seeding the db
 function makeCampsitesArray(){
@@ -62,7 +63,15 @@ function makeUserArray(){
             email: 'person@gmail.com',
             password: '$2a$12$nt8./ljTB2nPzcncvT51OOTl2AvWkDwQx0Fc70d8dB.VwKx.lKJRe'
         },
-    ]
+    ];//end of return
+}
+// make auth token for test
+function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+    const token = jwt.sign({ user_id: user.id }, secret, {
+        subject: user.user_name,
+        algorithm: 'HS256',
+    })
+    return `Bearer ${token}`
 }
 
 function seedCampsites(db, data){
@@ -123,4 +132,5 @@ module.exports = {
     seedReviews2,
     seedUsers,
     cleanTables,
+    makeAuthHeader,
 }

@@ -26,10 +26,15 @@ app.use(cors());
 
 app.use(helmet())
 // endpoints
+// protected post
 app.use('/api/campsites', campsiteRouter);
+// protected post
 app.use('/api/reviews', revRouter);
+// login
 app.use('/api/auth', authRouter);
+// semi protected but different
 app.use('/api/reset', resRouter);
+// un protected
 app.use('/api/users', usersRouter);
 // /api/users/new-user
 // catch all error handler

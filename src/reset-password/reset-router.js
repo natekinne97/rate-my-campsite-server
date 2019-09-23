@@ -14,9 +14,10 @@ resRouter
     .post(jsonBodyParser, (req, res, next) => {
         const {  email } = req.body;
     
+        // check if email was sent to api
         if (!email)
             return res.status(400).json({
-                error: 'Incorrect user_name or email',
+                error: 'Missing email in request body.',
             })
         
         //  check user name
@@ -27,8 +28,9 @@ resRouter
             .then(dbUser => {
                 
                 if (!dbUser.email)
+                    console.log('no user found');
                     return res.status(400).json({
-                        error: 'email not found',
+                        error: 'User not found.',
                     })
 
                 // setup token
