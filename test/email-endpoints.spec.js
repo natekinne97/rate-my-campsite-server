@@ -43,13 +43,45 @@ describe.only('Email password reset test', ()=>{
 
     // send false email and check if we recieve false user
     it('User not found return 400', ()=>{
-        let email = 'wrongperson@gmail.com'
+        let email = {
+            email: 'wrongperson@gmail.com',
+        }
         return supertest(app)
             .post('/api/reset/forgot')
             .send(email)
             .expect(400, {
                 error: `User not found.`,
             })
+    });
+
+    // reset password page errors
+    describe('post /reset-check if token exists', ()=>{
+            it('No token send 400', ()=>{
+                let token = '';
+                return supertest(app)
+                    .post('/api/reset/reset-check')
+                    .send(token)
+                    .expect(400, {
+                        error: `Missing token in request field.`,
+                    })
+            });
+
+            it('User not found with token', ()=>{
+                let token ={
+                    resetPasswordToken: '849398ds7f89da8f9dsaf78ds9a07f8'
+                }
+                return supertest(app)
+                    .post('/api/reset/reset-check')
+                    .send(token)
+                    .expect(400, {
+                        error: `password reset link is invalid or has expired`,
+                    })
+            });
+
+    })
+
+    describe('Patch reseting the password', ()=>{
+
     });
 
 });

@@ -46,6 +46,15 @@ function makeReviewArray(){
     ]
 }
 
+// finds the user with the token given
+function getUserWithTokens(db, resetpasswordtoken){
+    return db('users')
+        .where({
+            resetpasswordtoken: resetpasswordtoken,
+        })
+        .first()
+}
+
 // user array is being used to retrieve the author for comments
 function makeUserArray(){
     return [
@@ -133,4 +142,5 @@ module.exports = {
     seedUsers,
     cleanTables,
     makeAuthHeader,
+    getUserWithTokens,
 }

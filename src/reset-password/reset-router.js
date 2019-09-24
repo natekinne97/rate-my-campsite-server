@@ -13,7 +13,7 @@ resRouter
     .route('/forgot')
     .post(jsonBodyParser, (req, res, next) => {
         const {  email } = req.body;
-    
+        console.log(email);
         // check if email was sent to api
         if (!email)
             return res.status(400).json({
@@ -27,8 +27,7 @@ resRouter
         )
             .then(dbUser => {
                 
-                if (!dbUser.email)
-                    console.log('no user found');
+                if (!dbUser)
                     return res.status(400).json({
                         error: 'User not found.',
                     })
@@ -93,7 +92,7 @@ resRouter
                 })
 
             })
-            .catch(next)
+            .catch(next);
 
     });
 
@@ -102,6 +101,12 @@ resRouter.route('/reset-check')
     .post(jsonBodyParser,(req, res, next)=>{
         // get user token
         const {resetPasswordToken} = req.body;
+
+        if(!resetPasswordToken){
+            res.status(400).json({
+                error: 'Missing token in request field.'
+            })
+        }
         // find user with token
         resestServices.getUserWithTokens(
             req.app.get('db'),
@@ -110,7 +115,9 @@ resRouter.route('/reset-check')
             // check if something is returned
             if(user == null){
                 console.log('password reset link is invalid or has expired')
-                res.json('password reset link is invalid or has expired')
+                res.status(400).json({
+                    error: 'password reset link is invalid or has expired'
+                })
             }else{
                
                 if(Number(user.resetpasswordexpires) > Date.now()){
@@ -118,7 +125,9 @@ resRouter.route('/reset-check')
                         .location(`/${user.id}`)
                         .json(user.user_name);
                 }else{
-                    res.json('password reset link is invalid or has expired');
+                    res.status(400).json({
+                        error: 'password reset link is invalid or has expired'
+                    })
                 }
 
             }
