@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require('path')
 const UsersService = require('./users-service')
-
+const AuthService = require('../auth/auth-service');
 const usersRouter = express.Router()
 const jsonBodyParser = express.json()
 
@@ -62,11 +62,13 @@ usersRouter
                             newUser
                         )
                             .then(user => {
-                                
-                                res
-                                    .status(200)
-                                    .location(path.posix.join(req.originalUrl, `/${user.id}`))
-                                    .json(UsersService.serializeUser(user))
+                                const sub = user.user_name
+                                const payload = { user_id: user.id }
+                                // send the token
+                                res.status(200)
+                                    .send({
+                                        authToken: AuthService.createJwt(sub, payload),
+                                    })
                             })
                     })
             })

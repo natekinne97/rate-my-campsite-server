@@ -141,7 +141,7 @@ async function checkCampsiteExists(req, res, next) {
         )
 
         if (!campsite)
-            return res.status(404).json({
+            return res.status(400).json({
                 error: `campsite doesn't exist`
             })
 
@@ -162,7 +162,7 @@ async function checkReviewsExist(req, res, next) {
         )
 
         if (!rev)
-            return res.status(404).json({
+            return res.status(400).json({
                 error: `campsite doesn't exist`
             })
 
