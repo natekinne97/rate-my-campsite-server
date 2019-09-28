@@ -1,3 +1,4 @@
+
 SUMMARY
 
 Rate My Campsite Server handles everything from user login
@@ -43,3 +44,4 @@ There can only be a single request per valid token on this link.
 
 Finally we have to update the user password. 
 '/api/reset/reset-password' the body must contain the username aquired from the validation and the new password.
+
