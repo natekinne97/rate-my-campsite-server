@@ -2,7 +2,9 @@ CREATE TABLE reviews(
     id SERIAL PRIMARY KEY,
     text TEXT NOT NULL,
     rating INTEGER NOT NULL,
-    date_created TIMESTAMP DEFAULT now() NOT NULL,
+    date_created DATE NOT NULL DEFAULT CURRENT_DATE,
+    user_id INTEGER
+       REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     campsite_id INTEGER
-       REFERENCES campsites(id) ON DELETE CASCADE NOT NULL,
+       REFERENCES campsites(id) ON DELETE CASCADE NOT NULL
 );

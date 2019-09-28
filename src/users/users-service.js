@@ -16,7 +16,7 @@ const UsersService = {
     insertUser(db, newUser) {
         return db
             .insert(newUser)
-            .into('blogful_users')
+            .into('users')
             .returning('*')
             .then(([user]) => user)
     },
@@ -39,6 +39,12 @@ const UsersService = {
             return 'Password must contain 1 upper case, lower case, number and special character'
         }
         return null
+    },
+    // check user from db
+    getUsernameWithEmail(db, email) {
+        return db('users')
+            .where({ email })
+            .first()
     },
     // encript password
     hashPassword(password) {

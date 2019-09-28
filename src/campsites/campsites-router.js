@@ -1,5 +1,6 @@
 const express = require('express');
 const campsiteServices = require('./campsites-service');
+const { requireAuth } = require('../middleware/jwt-auth');
 const jsonBodyParser = express.json()
 const campsiteRouter = express.Router();
 
@@ -8,9 +9,10 @@ campsiteRouter
         .route('/')
         .get((req, res, next)=>{
             campsiteServices
-                .getAllSites(req.app.get('db'))
-                    .then(results =>{
-                        res.json(results)
+                .getAllSites(req.app.get('db'), req.query.order)
+                    .then(result =>{
+                        res.status(200).json(result.map( campsiteServices.serializeCampsites))
+
                     }).catch(next);
         });
 
@@ -26,16 +28,31 @@ campsiteRouter
                 req.app.get('db'),
                 id
             ).then(result=>{
-                res.json(result);
+                  res.status(200).json(campsiteServices.serializeCampsites(result[0]));
             }).catch(next)
 
         })
+// 
+// get the reviews for campsite
+campsiteRouter.route('/:campsite_id/reviews/')
+            .all(checkReviewsExist)
+            .get((req, res, next)=>{
+                
+                campsiteServices.getCampsiteReviews(
+                    req.app.get('db'),
+                    Number(req.params.campsite_id)
+                ).then(result=>{
+                    res.json(result.rows.map(campsiteServices.serializeReviews));
+                }).catch(next);
+            });
+
+
 
 // update campsite
 campsiteRouter
         .route('/:id')
         .all(checkCampsiteExists)
-        .patch(jsonBodyParser, (req, res, next)=>{
+        .patch(requireAuth,jsonBodyParser, (req, res, next)=>{
             const {img, name, description, park, city, state} = req.body;
             const updated = {img: img, 
                 name: name, 
@@ -62,14 +79,14 @@ campsiteRouter
                 res.status(204)
                     .location(`/${result.id}`)
                     .json({result});
-            })
+            }).catch(next);
 
 
         })//end update
 
 // insert new site
 campsiteRouter.route('/')
-    .post(jsonBodyParser,(req, res, next)=>{
+    .post(requireAuth,jsonBodyParser,(req, res, next)=>{
                 //get data
                 const { img, name, description, park, city, state } = req.body;
                 const newCampsite = {
@@ -80,10 +97,10 @@ campsiteRouter.route('/')
                     city: city,
                     state: state
                 };
-
+               
                 // check if fields are there
                 Object.keys(newCampsite).forEach(field => {
-                    console.log(field);
+                   
                     if (!newCampsite[field]) {
                         return res.status(400).json({
                             error: `Missing '${field}' in request body`
@@ -106,7 +123,7 @@ campsiteRouter.route('/')
 // delete the campsite
 campsiteRouter.route('/:id')
             .all(checkCampsiteExists)
-            .delete((req, res, next)=>{
+            .delete(requireAuth,(req, res, next)=>{
                 campsiteServices.deleteCampsite(
                     req.app.get('db'),
                     req.params.id
@@ -124,7 +141,7 @@ async function checkCampsiteExists(req, res, next) {
         )
 
         if (!campsite)
-            return res.status(404).json({
+            return res.status(400).json({
                 error: `campsite doesn't exist`
             })
 
@@ -134,5 +151,28 @@ async function checkCampsiteExists(req, res, next) {
         next(error)
     }
 }
+
+// check if reviews for campsite
+async function checkReviewsExist(req, res, next) {
+    
+    try {
+        const rev = await campsiteServices.getCampsiteReviews(
+            req.app.get('db'),
+            Number(req.params.campsite_id)
+        )
+
+        if (!rev)
+            return res.status(400).json({
+                error: `campsite doesn't exist`
+            })
+
+        res.rev = rev
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
+
+
         
 module.exports = campsiteRouter;

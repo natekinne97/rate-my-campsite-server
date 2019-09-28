@@ -9,17 +9,18 @@ function requireAuth(req, res, next) {
     if (!authToken.toLowerCase().startsWith('bearer ')) {
         return res.status(401).json({ error: 'Missing bearer token' })
     } else {
+        // slice at 7 to remove the word bearer
         bearerToken = authToken.slice(7, authToken.length)
     }
     try {
-
+        // veryify payload
         const payload = AuthService.verifyJwt(bearerToken)
-
+        // get user from user name
         AuthService.getUserWithUserName(
             req.app.get('db'),
             payload.sub,
         )
-            .then(user => {
+            .then(user => {        
                 if (!user)
                     return res.status(401).json({ error: 'Unauthorized request' })
                 req.user = user
