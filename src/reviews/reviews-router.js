@@ -57,6 +57,7 @@ revRouter.route('/')
     .post(requireAuth, jsonBodyParser,(req,res, next)=>{
             const { text, rating, campsite_id} = req.body;
             
+           
             const newReview = {
                 text: xss(text),
                 rating: rating,
@@ -79,9 +80,24 @@ revRouter.route('/')
                 req.app.get('db'),
                 newReview
             ).then(result => {
-                res.status(200)
-                    .location(`/${result.id}`)
-                    .json(result)
+               
+                reviewService.getById(
+                    req.app.get('db'),
+                    result.id
+                ).then(review=>{
+                    
+                    if(!review){
+                        res.status(400).json({
+                            error: 'making review'
+                        })
+                    }
+                    res.status(200)
+                        .location(`/${review.id}`)
+                        .json(reviewService.serializeReviews(review.rows[0]))
+
+                })
+                // console.log(result, 'review');
+                
             }).catch(next);
 
         })

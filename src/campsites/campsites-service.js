@@ -91,14 +91,13 @@ const campsiteServices= {
         }
     },
     serializeCampsites(site){
-        
-        if(typeof site === 'string'){
+       if(typeof site === 'string'){
             site = JSON.parse(site);
             console.log('type of site change: ', typeof site);
             console.log(site, 'id for site attempting');
         };
-        if(Number(site.number_of_reviews) === 0){
-            console.log('checking type of site: ', typeof site);
+        if (typeof site.number_of_reviews === 'undefined'){
+            console.log('serialized without reviewsj');
             return {
                 id: site.id,
                 img: xss(site.img),
@@ -109,7 +108,7 @@ const campsiteServices= {
                 state: xss(site.state),
             }
         }else{
-            
+           
             return {
                 id: site.id,
                 img: xss(site.img),

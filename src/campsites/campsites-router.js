@@ -8,9 +8,11 @@ const campsiteRouter = express.Router();
 campsiteRouter
         .route('/')
         .get((req, res, next)=>{
+            console.log('dsafdsa');
             campsiteServices
                 .getAllSites(req.app.get('db'), req.query.order)
                     .then(result =>{
+                       
                         res.status(200).json(result.map( campsiteServices.serializeCampsites))
 
                     }).catch(next);
@@ -37,7 +39,6 @@ campsiteRouter
 campsiteRouter.route('/:campsite_id/reviews/')
             .all(checkReviewsExist)
             .get((req, res, next)=>{
-                
                 campsiteServices.getCampsiteReviews(
                     req.app.get('db'),
                     Number(req.params.campsite_id)
@@ -115,7 +116,7 @@ campsiteRouter.route('/')
                 ).then(result=>{
                     res.status(204)
                         .location(`/${result.id}`)
-                        .json(result)
+                        .json(campsiteServices.serializeCampsites(result));
                 }).catch(next);
 
             });

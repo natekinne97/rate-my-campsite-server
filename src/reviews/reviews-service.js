@@ -3,9 +3,9 @@ const xss = require('xss');
 const reviewService = {
     // get all reviews by id
     getById(db, id){
-        return db.raw(`select reviews.id, reviews.text, reviews.rating, reviews.date_created, 
+        return db.raw(`select reviews.id, reviews.text, reviews.rating, to_char(reviews.date_created, 'DD-MM-YY'), 
         users.user_name from reviews, users 
-        where (reviews.user_id = users.id and reviews.campsite_id = ${id});`)
+        where (reviews.user_id = users.id and reviews.id = ${id});`)
     },
     // insert to db
     insertReview(db, newReview){
@@ -32,7 +32,7 @@ const reviewService = {
             id: site.id,
             text: xss(site.text),
             rating: site.rating,
-            date_created: site.date_created,
+            date_created: site.to_char,
             author: xss(site.user_name)
         }
     },
