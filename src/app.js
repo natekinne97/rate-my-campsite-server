@@ -26,6 +26,7 @@ app.use(cors());
 
 app.use(helmet())
 // endpoints
+app.use('/uploads', express.static('uploads'));
 // protected post
 app.use('/api/campsites', campsiteRouter);
 // protected post

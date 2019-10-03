@@ -100,7 +100,7 @@ const campsiteServices= {
             console.log('serialized without reviewsj');
             return {
                 id: site.id,
-                img: xss(site.img),
+                img: site.img,
                 name: xss(site.name),
                 description: xss(site.description),
                 park: xss(site.park),
@@ -111,7 +111,7 @@ const campsiteServices= {
            
             return {
                 id: site.id,
-                img: xss(site.img),
+                img: site.img,
                 name: xss(site.name),
                 description: xss(site.description),
                 park: xss(site.park),
