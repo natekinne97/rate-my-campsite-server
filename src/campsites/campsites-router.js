@@ -1,37 +1,6 @@
 const express = require('express');
 const campsiteServices = require('./campsites-service');
 const { requireAuth } = require('../middleware/jwt-auth');
-const multer = require('multer');
-const fs = require('fs');
-
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null, './uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, new Date() + file.originalname);
-    },
-});
-
-const fileFilter = (req, file, cb)=>{
-    console.log('getting called')
-    console.log('checking file type')
-    console.log(file.mimetype, 'mimetype');
-    if (file.mimetype === 'image/jpg' || file.mimetype === 'image/png' || file.mimetype === 'image/jpeg'){
-        console.log('uploading now')
-        cb(null, true);
-    }else{
-        console.log('denying upload')
-        cb(new Error('Only Images cano be uploaded'), false);
-    }
-}
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 15
-    },
-    fileFilter: fileFilter
-    });
 const jsonBodyParser = express.json()
 const campsiteRouter = express.Router();
 
@@ -48,14 +17,6 @@ campsiteRouter
 
                     }).catch(next);
         });
-// temp route to test if working
-campsiteRouter.route('/test')
-        .post(upload.single('img'),(req, res, next)=>{
-            console.log(req.file.path, 'file path');  
-            res.status(200).json({
-                message: 'uploaded'
-            })
-        })
 
 // get by id
 campsiteRouter
@@ -126,20 +87,13 @@ campsiteRouter
 
 // insert new site
 campsiteRouter.route('/')
-    .post(upload.single('img'), jsonBodyParser,(req, res, next)=>{
-                console.log('printing file path')
-                if (req.file === undefined || req.file === null){
-                   console.log(req.file, 'req.file exists');
-                }
+    .post(requireAuth,jsonBodyParser,(req, res, next)=>{
                 
-                console.log(req.body, 'body');
-                
-                console.log(req.file, 'file');
                 //get data
-                const {name, description, park, city, state } = req.body;
+                const {img, name, description, park, city, state } = req.body;
 
                 const newCampsite = {
-                    img: req.file.path,
+                    img: img,
                     name: name,
                     description: description,
                     park: park,
