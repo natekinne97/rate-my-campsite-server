@@ -51,8 +51,10 @@ const campsiteServices= {
             ).groupBy(db.raw('1,2, 3, 4, 5, 6, 7'))
             .where('camp.id', id);
     },
+
     // insert campsite to db
     insertCampsite(db, newCampsite){
+        console.log('inserting campsite', newCampsite);
         return db
                 .insert(newCampsite)
                 .into('campsites')
@@ -96,8 +98,8 @@ const campsiteServices= {
             console.log('type of site change: ', typeof site);
             console.log(site, 'id for site attempting');
         };
-        if (typeof site.number_of_reviews === 'undefined'){
-            console.log('serialized without reviewsj');
+        if (!site.number_of_reviews){
+            
             return {
                 id: site.id,
                 img: site.img,

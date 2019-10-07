@@ -18,6 +18,7 @@ campsiteRouter
                     }).catch(next);
         });
 
+
 // get by id
 campsiteRouter
         .route('/:id')
@@ -77,7 +78,7 @@ campsiteRouter
                 req.params.id,
                 updated
             ).then(result=>{
-                res.status(204)
+                res.status(200)
                     .location(`/${result.id}`)
                     .json({result});
             }).catch(next);
@@ -85,9 +86,11 @@ campsiteRouter
 
         })//end update
 
+
+
 // insert new site
 campsiteRouter.route('/')
-    .post(requireAuth,jsonBodyParser,(req, res, next)=>{
+    .post(jsonBodyParser,(req, res, next)=>{
                 
                 //get data
                 const {img, name, description, park, city, state } = req.body;
@@ -103,7 +106,6 @@ campsiteRouter.route('/')
                
                 // check if fields are there
                 Object.keys(newCampsite).forEach(field => {
-                   
                     if (!newCampsite[field]) {
                         return res.status(400).json({
                             error: `Missing '${field}' in request body`
@@ -112,12 +114,13 @@ campsiteRouter.route('/')
                     }
                 })
 
-                campsiteServices.insertCampsite(
+             campsiteServices.insertCampsite(
                     req.app.get('db'),
                     newCampsite
                 ).then(result=>{
                     console.log(campsiteServices.serializeCampsites(result) ,'serialized result');
-                    res.status(204)
+                    res.status(200)
+                        .location(`/${result.id}`)
                         .json(campsiteServices.serializeCampsites(result));
                 }).catch(next);
 

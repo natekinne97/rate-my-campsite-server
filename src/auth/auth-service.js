@@ -5,7 +5,8 @@ const config = require('../config')
 const AuthService = {
     // get user from username
     getUserWithUserName(db, user_name) {
-        return db('users')
+        return db.from('users')
+            .select('*')
             .where({ user_name })
             .first()
     },
