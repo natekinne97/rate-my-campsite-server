@@ -29,10 +29,7 @@ describe('User endpoints', ()=>{
         context('User validation', ()=>{
             // insert all the data to the database
             beforeEach('inserting data to db', () => {
-                return helpers.seedUsers(db, users)
-                    .then(() => {
-                        console.log('users added')
-                    });
+                return helpers.seedUsers(db, users);
             })
 
             const requiredFields = ['user_name', 'email', 'password', 'full_name'];

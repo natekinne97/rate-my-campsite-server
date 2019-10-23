@@ -90,7 +90,7 @@ campsiteRouter
 
 // insert new site
 campsiteRouter.route('/')
-    .post(jsonBodyParser,(req, res, next)=>{
+    .post(requireAuth,jsonBodyParser,(req, res, next)=>{
                 
                 //get data
                 const {img, name, description, park, city, state } = req.body;
@@ -118,7 +118,6 @@ campsiteRouter.route('/')
                     req.app.get('db'),
                     newCampsite
                 ).then(result=>{
-                    console.log(campsiteServices.serializeCampsites(result) ,'serialized result');
                     res.status(200)
                         .location(`/${result.id}`)
                         .json(campsiteServices.serializeCampsites(result));

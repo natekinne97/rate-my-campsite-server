@@ -108,11 +108,11 @@ function seedReviews2(db, users, reviews){
                 .insert(reviews)
                 .returning('*')
                 .then(rows => {
-                    console.log(rows, 'rows being returned')
+                   
                     return rows[0];
                 });
        
-            console.log('seeding reviews');
+            
     })
 }
 

@@ -33,10 +33,9 @@ describe('campsite endpoints', function(){
                 db, 
                 campsites
             ).then(res=>{
-                console.log('campsites into db')
-                return  helpers.seedReviews2(db, users, reviews).then(res => {
-                    console.log('reviews added');
-                }).catch(error => console.log(error, 'error'));
+                
+                return  helpers.seedReviews2(db, users, reviews)
+                .catch(error => console.log(error, 'error'));
             })
             // seed users
             // helpers.seedUsers(db, users).then(res =>{

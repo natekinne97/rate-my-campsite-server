@@ -3,7 +3,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const helpers = require('./campsite-helper');
 
-describe.only('Email password reset test', ()=>{
+describe('Email password reset test', ()=>{
     let db;
     const users = helpers.makeUserArray();
 
@@ -23,10 +23,8 @@ describe.only('Email password reset test', ()=>{
     afterEach('cleanup', () => helpers.cleanTables(db))
 
     beforeEach('insert campsites', () => {
-        return helpers.seedUsers(db, users)
-                .then(()=>{
-                    console.log('users seeded');
-                })
+        return helpers.seedUsers(db, users);
+               
     })
 
     // first start at the reset request. we want to test
